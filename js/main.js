@@ -1,25 +1,24 @@
-var word = "";
 var wordBank = [];
 
-var randomWord = load("random-words") // asynchronously load a node module by module name; module was installed with `npm install qs`
+function generateRandomWord() {
+    var randomWord = load("random-words") // asynchronously load a node module by module name; module was installed with `npm install qs`
         .then((generatedWord) => {
             word = generatedWord;
             return word();
         });
+    return randomWord;
+}
 
-console.log(randomWord.randomWord());
-// console.log(randomWord.then(function() {
-//     console.log(word())
-// }))
+// console.log(generateRandomWord());
 
-// function wordGame(randomWord) {
-//     console.log(randomWord);
-// }
-
-    $('.test').on('click', function () {
+$('.test').on('click', function () {
+    var word = "";
+    generateRandomWord().then(function (randomWord) {
+        word = randomWord;
+        console.log(word);
         wordBank = [];
         $.ajax({
-            url: 'https://api.datamuse.com/' + '/words?rel_rhy=resentful',
+            url: 'https://api.datamuse.com/' + '/words?rel_rhy=' + word,
             contentType: 'applications/json',
             dataType: 'json',
             success: function (result) {
@@ -29,10 +28,5 @@ console.log(randomWord.randomWord());
                 }
             }
         })
-    });
-
-
-
-// setTimeout(function() {
-//     console.log(wordBank); 
-// }, 3000);
+    })
+});
